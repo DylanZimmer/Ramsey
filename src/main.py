@@ -23,7 +23,7 @@ def main():
         y_in_Rxy = y
     )
 
-    computed_metrics = metrics.compute_noncolored_metrics(v,x,y)
+    computed_metrics = metrics.compute_metrics(v,x,y)
 
     db.insert_graph_metrics(graph_id, computed_metrics)
 
