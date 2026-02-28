@@ -1,7 +1,9 @@
 import sqlite3
+import json
 from pathlib import Path
 
 DB_PATH = Path(__file__).parent.parent / "data" / "ramsey.db"
+
 
 def get_connection():
     """Return a SQLite connection."""
@@ -9,10 +11,12 @@ def get_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+
 def create_tables():
     """Create graphs and graph_metrics tables if they don't exist."""
     with get_connection() as conn:
         cursor = conn.cursor()
+
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS graphs (
             graph_id INTEGER PRIMARY KEY,
@@ -22,20 +26,34 @@ def create_tables():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """)
+
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS graph_metrics (
             graph_id INTEGER,
-            num_x_simplices INTEGER,
-            num_y_simplices INTEGER,
-            x_simplices_per_vertex INTEGER,
-            y_simplices_per_vertex INTEGER,
-            x_simplices_per_edge INTEGER,
-            y_simplices_per_edge INTEGER,
-            x_simplices_in_y_simplices INTEGER,
+
+            -- a1oc metrics
+            num_first_order_lines INTEGER,
+            first_order_lines TEXT,
+            num_Ky_with_one_blue_line_a1oc INTEGER,
+            num_Ky_still_fully_red_a1oc INTEGER,
+            num_Kx_with_one_blue_line_a1oc INTEGER,
+            num_Kx_still_fully_red_a1oc INTEGER,
+            untouched_vertex_a1oc TEXT,
+
+            -- a2oc metrics
+            num_second_order_lines INTEGER,
+            second_order_lines TEXT,
+            num_Ky_with_u_blue_lines_a2oc TEXT,
+            num_Ky_still_fully_red_a2oc INTEGER,
+            num_Kx_with_u_blue_lines_a2oc TEXT,
+            num_Kx_still_fully_red_a2oc INTEGER,
+
             FOREIGN KEY(graph_id) REFERENCES graphs(graph_id)
         );
         """)
+
         conn.commit()
+
 
 def insert_graph(n_vertices, x_in_Rxy, y_in_Rxy):
     with get_connection() as conn:
@@ -47,28 +65,62 @@ def insert_graph(n_vertices, x_in_Rxy, y_in_Rxy):
         conn.commit()
         return cursor.lastrowid
 
+
 def insert_graph_metrics(graph_id, metrics):
+    """
+    Insert computed metrics.
+    Lists and dicts are serialized to JSON.
+    """
     with get_connection() as conn:
         cursor = conn.cursor()
+
         cursor.execute("""
         INSERT INTO graph_metrics (
             graph_id,
-            num_x_simplices,
-            num_y_simplices,
-            x_simplices_per_vertex,
-            y_simplices_per_vertex,
-            x_simplices_per_edge,
-            y_simplices_per_edge,
-            x_simplices_in_y_simplices
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+
+            num_first_order_lines,
+            first_order_lines,
+            num_Ky_with_one_blue_line_a1oc,
+            num_Ky_still_fully_red_a1oc,
+            num_Kx_with_one_blue_line_a1oc,
+            num_Kx_still_fully_red_a1oc,
+            untouched_vertex_a1oc,
+
+            num_second_order_lines,
+            second_order_lines,
+            num_Ky_with_u_blue_lines_a2oc,
+            num_Ky_still_fully_red_a2oc,
+            num_Kx_with_u_blue_lines_a2oc,
+            num_Kx_still_fully_red_a2oc
+
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             graph_id,
-            metrics['num_x_simplices'],
-            metrics['num_y_simplices'],
-            metrics['x_simplices_per_vertex'],
-            metrics['y_simplices_per_vertex'],
-            metrics['x_simplices_per_edge'],
-            metrics['y_simplices_per_edge'],
-            metrics['x_simplices_in_y_simplices']
+
+            metrics.get('num_first_order_lines'),
+            json.dumps(metrics.get('first_order_lines')),
+            metrics.get('num_Ky_with_one_blue_line_a1oc'),
+            metrics.get('num_Ky_still_fully_red_a1oc'),
+            metrics.get('num_Kx_with_one_blue_line_a1oc'),
+            metrics.get('num_Kx_still_fully_red_a1oc'),
+            json.dumps(metrics.get('untouched_vertex_a1oc')),
+
+            metrics.get('num_second_order_lines'),
+            json.dumps(metrics.get('second_order_lines')),
+            json.dumps(metrics.get('num_Ky_with_u_blue_lines_a2oc')),
+            metrics.get('num_Ky_still_fully_red_a2oc'),
+            json.dumps(metrics.get('num_Kx_with_u_blue_lines_a2oc')),
+            metrics.get('num_Kx_still_fully_red_a2oc')
         ))
+
+        conn.commit()
+
+def drop_all_tables():
+    """Drop all user tables."""
+    with get_connection() as conn:
+        cursor = conn.cursor()
+
+        cursor.execute("DROP TABLE IF EXISTS graph_metrics;")
+        cursor.execute("DROP TABLE IF EXISTS graphs;")
+
         conn.commit()

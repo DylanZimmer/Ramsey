@@ -7,7 +7,7 @@ def main():
     db.create_tables()
 
     #num vertices
-    v = 5
+    v = 8
     xy1 = 3
     xy2 = 4
     x = min(xy1, xy2)
@@ -22,6 +22,8 @@ def main():
         x_in_Rxy = x,
         y_in_Rxy = y
     )
+
+    db.create_tables()
 
     computed_metrics = metrics.compute_metrics(v,x,y)
 
