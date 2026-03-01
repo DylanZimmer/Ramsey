@@ -55,3 +55,38 @@ For three blue lines:
     s=4, b=2
 For four blue lines:
     s=1, b=2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def num_K_with_one_blue_line_a2oc(fo, xy, vOdd):
+    #fo = line(fo_lines), vOdd = 1 if v is odd 0 if even
+    ret = 0
+    s = fo - 1 + vOdd     #Number of safe vertices. One per fo_l except for chosen fo_l, extra vertex if present
+    b = floor((fo+vOdd) / 2)     #The number of unsaf blocks
+    k = xy - 2     #These are Kxy. I fixed the first two so I need to fill the rest of the xy spaces
+    for i in range(min(b,k)+1):
+        ret += (nCk(b,i) * 2**i * nCk(s,k-i))
+    ret *= fo
+    return ret

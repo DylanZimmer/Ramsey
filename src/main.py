@@ -23,8 +23,8 @@ def main():
         y_in_Rxy = y
     )
 
-    db.create_tables()
-
+    db.drop_all_tables()
+    
     computed_metrics = metrics.compute_metrics(v,x,y)
 
     db.insert_graph_metrics(graph_id, computed_metrics)
