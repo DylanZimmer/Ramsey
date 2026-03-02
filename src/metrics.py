@@ -4,6 +4,8 @@ from math import floor, factorial
 def nCk(n,k):
     numer_start = max(n-k,k)
     denom_fac = min(n-k,k)
+    if denom_fac < 0:
+        return 0
     numerator = 1
     for i in range(numer_start+1, n+1):
         numerator *= i
@@ -99,14 +101,10 @@ def compute_metrics(v, x, y):
 
 
     #     a1oc metrics
-    metrics['num_first_order_lines'] = floor(v / 2)
-    metrics['first_order_lines'] = first_order_lines
     metrics['Kx_with_u_blue_lines_a1oc'] = Kx_with_u_blue_lines_a1oc
     metrics['Ky_with_u_blue_lines_a1oc'] = Ky_with_u_blue_lines_a1oc
 
     #     a2oc metrics
-    metrics['num_second_order_lines'] = floor(fo + vOdd)
-    metrics['second_order_lines'] = second_order_lines
     metrics['Kx_with_u_blue_lines_a2oc'] = Kx_with_u_blue_lines_a2oc
     metrics['Ky_with_u_blue_lines_a2oc'] = Ky_with_u_blue_lines_a2oc
 
