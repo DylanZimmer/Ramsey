@@ -10,6 +10,16 @@ def get_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+def drop_tables():
+    conn = get_connection()
+    conn.execute(f"DROP TABLE IF EXISTS graphs")
+    conn.execute(f"DROP TABLE IF EXISTS graph_metrics")
+    conn.execute(f"DROP TABLE IF EXISTS graph_metrics_brute")
+    conn.commit()
+    conn.close()
+
+
+
 def create_tables():
     with get_connection() as conn:
         cursor = conn.cursor()

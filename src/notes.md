@@ -58,15 +58,45 @@ For four blue lines:
 
 
 
+For v=15
+First Order Lines = [(0,1),(2,3),(4,5),(6,7),(8,9),(10,11),(12,13)] u_v=14
+Second Order Lines = [(0,2),(4,6),(8,10),(12,14)]
+
+For a fixed (0,1), with k = x-2:
+    Safe vertices (no blue with 0,1 or each other) = 
+        [3,5,7,9,11,13]                               cardinality is s
+    Unsafe boxes (should all add one more blue line)=
+        [(4,6),(8,10),(12,14)]                        cardinality is b
+    I can get all Kx with a single blue line as
+        summation i from 0 to b (s-iCk-i + bCi)
+    
+For all Kx with two blue lines you have
+    (0,1,2,x,y) for x,y in safe, x,y >= 5 (excludes 3), or x is in 1 unsafe box (remove corresponding
+        from safe, ie pick 4 remove 5 from s pick 6 remove 7)
+    (0,1,[unsafe box],x) where x is 
+        summation i from 0 to b-1 (s-2-iCk-2-i + b-1Ci)
+    (0,1,fo_l,x) where fo_l is (4,5) or later
+        For (0,1,4,5,x,y) relevant safe = [3,7,9,11,13]
+                        relevant unsafe = [(8,10),(12,14)] =
+        summation i from 0 to b-1(s-1-iC2-i + b-1Ci)
 
 
 
 
-
-
-
-
-
+Boxes are fully blue cliques after second order coloring
+WON'T WORK BECAUSE 
+    Doesn't include the blues between say 3,4
+Second Order Boxes for Calculations =
+    [(0,1,2,3),(4,5,6,7),(8,9,10,11),(12,13,14)]
+    For [(0,1,2,3)] :
+        Blue : (0,1), (0,2), (2,3)
+        Red : (0,3), (1,3), (1,2)
+    For [(4,5,6,7)] :
+        Blue : (4,5), (4,6)
+        Red : 
+    For [(12,13,14)]
+        Blue : (12,13), (12,14)
+        Red : (11,12), (11,13), (11,14), 
 
 
 
@@ -90,3 +120,11 @@ For four blue lines:
         ret += (nCk(b,i) * 2**i * nCk(s,k-i))
     ret *= fo
     return ret
+
+
+
+
+
+
+
+

@@ -1,16 +1,17 @@
 from math import floor, factorial
+from itertools import combinations
 
 #Say n = 10, k = 2      numer_start = 8
-def nCk(n,k):
-    numer_start = max(n-k,k)
-    denom_fac = min(n-k,k)
-    if denom_fac < 0:
+def nCk(n, k):
+    if n < 0 or k < 0 or k > n:
         return 0
+    numer_start = max(n-k, k)
+    denom_fac = min(n-k, k)
     numerator = 1
     for i in range(numer_start+1, n+1):
         numerator *= i
     denominator = factorial(denom_fac)
-    return (numerator / denominator)
+    return numerator // denominator
 
 def compute_first_order_lines(v):
     first_order_lines = []
@@ -32,43 +33,53 @@ def compute_second_order_lines(first_order_lines, untouched_v):
             second_order_lines.append([first_order_lines[i][0], untouched_v])
     return second_order_lines
 
-def num_K_fully_red_a2oc(fo, xy, vOdd):
-    #fo = len(fo_lines), vOdd = 1 if v odd 0 if even
-    #soWe is second order line containing the extra vertex
-    #soWOe is second order lines not containing the extra vertex
-    soWOe = floor(fo / 2)
-    if vOdd == 1 and fo & 1:
-        soWe = 1
-    else:
-        soWe = 0
-    #additive portion is all Kxy formed by taking 0 or 1 vertex from each first order line, then
-        #adding the Kxy that include the extra vertex
-    Kxy_formed_from_first_order = (nCk(fo,xy) * 2**xy) + (vOdd * nCk(fo,xy-1) * 2**(xy-1))
-    #Subtract out the Kxy that have a second order line
-    #First term is all Kxy with a second order line not containing the extra vertex, second term
-        #is all Kxy containing it
-    Kxy_w_so_l = (soWOe * nCk(fo-2,xy-2) * 2**(xy-2)) + (soWe * nCk(fo-1,xy-2) * 2**(xy-2))
-    return Kxy_formed_from_first_order - Kxy_w_so_l
-
-
-
-def num_K_with_u_blue_lines_a2oc(fo, xy, vOdd, u):
-    #fo = line(fo_lines), vOdd = 1 if v is odd 0 if even
+def one_u_a2oc(v, xy):
+    def calc(top, k, s, b, multiplier=1):
+        ret = 0
+        for i in range(top+1):
+            ret += nCk(s-i,k-i) * 2**i * nCk(b,i)
+        ret *= multiplier
+        return ret
+    
+    fo = v // 2
+    so = fo // 2
+    if fo & 1 and v & 1:
+        so += 1
+    k = xy - 2
+    b = so - 1
+    if v%2==0 and fo & 1:
+        b += 1
+    top_base = min(b,k)
     ret = 0
-    if u & 1:     #(so u odd)
-        s = fo - u
+    if v & 1:
+        if fo & 1:
+            top = min(top_base,fo-1)
+            ret += calc(top, k, fo-1, b, fo) #All fo_l
+            ret += calc(top, k, fo-1, b) #untouched_v so_l
+            top = min(top_base,fo-2)
+            ret += calc(top, k, fo-2, b, so-1) #All so_l except one with untouched_v
+        else:
+            top = min(top_base,fo)
+            ret += calc(top, k, fo, b, fo) #All fo_l
+            top = min(top_base,fo-1)
+            ret += calc(top, k, fo-1, b, so) #All so_l
     else:
-        s = int(fo - 1.5*u)
-    b = floor((fo+vOdd-u) / 2)     #The number of unsafe blocks
-    k = xy - u*2     #These are Kxy. I fixed the first two so I need to fill the rest of the xy spaces
-    for i in range(min(b,k)+1):
-        ret += (nCk(b,i) * 2**i * nCk(s,k-i))
-    if u != 0:
-        ret *= fo
+        if fo & 1:
+            top = min(top_base,fo-2)
+            ret += calc(top, k, fo-2, b, fo-1) #fo_l except last
+            top = min(top_base,fo-3)
+            ret += calc(top, k, fo-3, b, so) #All so_l
+            top = min(top_base,fo-1)
+            ret += calc(top, k, fo-1, b) #Last fo_l
+        else:
+            top = min(top_base,fo-1)
+            ret += calc(top, k, fo-1, b, fo) #All fo_l
+            top = min(top_base,fo-2)
+            ret += calc(top, k, fo-2, b, so) #All so_l
     return ret
 
 
-#a1oc = after first order coloring, a2oc = after second order coloring, etc.
+#a1oc = after first order coloring, a2oc = after second order coloring
 def compute_metrics(v, x, y):
     metrics = {}
 
@@ -91,6 +102,7 @@ def compute_metrics(v, x, y):
         Ky_with_u_blue_lines_a1oc[u] = num_K_with_u_blue_lines_a1oc(fo, y, vOdd, u)
 
     #calculations for second order
+    """
     second_order_lines = compute_second_order_lines(first_order_lines, untouched_vertex_a1oc)
     Kx_with_u_blue_lines_a2oc = {}
     Ky_with_u_blue_lines_a2oc = {}
@@ -98,6 +110,12 @@ def compute_metrics(v, x, y):
         Kx_with_u_blue_lines_a2oc[u] = num_K_with_u_blue_lines_a2oc(fo, x, vOdd, u)
     for u in range(y // 2 + 1):
         Ky_with_u_blue_lines_a2oc[u] = num_K_with_u_blue_lines_a2oc(fo, y, vOdd, u)
+    """
+
+    Kx_with_u_blue_lines_a2oc = {}
+    Ky_with_u_blue_lines_a2oc = {}
+    Kx_with_u_blue_lines_a2oc[1] = one_u_a2oc(v, x)
+    Ky_with_u_blue_lines_a2oc[1] = one_u_a2oc(v, y)
 
 
     #     a1oc metrics
