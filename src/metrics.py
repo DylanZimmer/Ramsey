@@ -37,13 +37,13 @@ def one_u_a2oc(v, xy):
     def calc(top, k, s, b, multiplier=1):
         ret = 0
         for i in range(top+1):
-            ret += nCk(s-i,k-i) * 2**i * nCk(b,i)
+            ret += nCk(s+1-i, k-i) * 2**i * nCk(b-1, i)
         ret *= multiplier
         return ret
     
     fo = v // 2
     so = fo // 2
-    if fo & 1 and v & 1:
+    if v & 1 and fo & 1:
         so += 1
     k = xy - 2
     b = so - 1
@@ -52,31 +52,46 @@ def one_u_a2oc(v, xy):
     top_base = min(b,k)
     ret = 0
     if v & 1:
-        if fo & 1:
+        if fo & 1: #v,fo odd
             top = min(top_base,fo-1)
             ret += calc(top, k, fo-1, b, fo) #All fo_l
             ret += calc(top, k, fo-1, b) #untouched_v so_l
             top = min(top_base,fo-2)
             ret += calc(top, k, fo-2, b, so-1) #All so_l except one with untouched_v
-        else:
+        else: #v odd, fo even                             Right
             top = min(top_base,fo)
             ret += calc(top, k, fo, b, fo) #All fo_l
             top = min(top_base,fo-1)
             ret += calc(top, k, fo-1, b, so) #All so_l
     else:
-        if fo & 1:
+        if fo & 1: #v even fo odd
             top = min(top_base,fo-2)
             ret += calc(top, k, fo-2, b, fo-1) #fo_l except last
             top = min(top_base,fo-3)
             ret += calc(top, k, fo-3, b, so) #All so_l
             top = min(top_base,fo-1)
             ret += calc(top, k, fo-1, b) #Last fo_l
-        else:
+        else: #v, fo even                                 Right
             top = min(top_base,fo-1)
             ret += calc(top, k, fo-1, b, fo) #All fo_l
             top = min(top_base,fo-2)
             ret += calc(top, k, fo-2, b, so) #All so_l
     return ret
+
+"""
+Right now for the correct one, v, fo_even I have
+    ret += calc(top, k, fo-1, b, fo) #All fo_l
+    ret += calc(top, k, fo-2, b, so) #All so_l
+
+for v odd fo_even I have
+    ret += calc(top, k, fo, b, fo) #All fo_l
+    ret += calc(top, k, fo-1, b, so) #All so_l
+
+
+
+
+
+"""
 
 
 #a1oc = after first order coloring, a2oc = after second order coloring
