@@ -1,3 +1,90 @@
+
+NEW IDEA
+Only look at the orders, not the affected Kv after them
+Thinking about allowed red Kx and blue Ky, so a monochromatic coloring contains a blue Kx or red Ky
+Think of the whole object as starting red, each line in an order being blue
+Ky then needs to have only cliques including a line in any order, with no Kx being fully colored by the ordered lines
+or Ky will have a fully blue clique with no Kx being fully colored
+
+That is :
+There is a non-monochromatic coloring of v for (x,y) :
+    There is no Kx fully contained in ordered lines
+    Every Ky clique contains at least one ordered line
+v is at or past R(x,y) :
+    There is a Kx fully contained in ordered lines
+    There is at least one Ky not containing an ordered line
+
+So for R(3,4) [which is 9] :
+v=8 :
+1o = [(0,1),(2,3),(4,5),(6,7)]
+2o = [(0,2),(4,6)]
+3o = [(1,5),(3,7)]
+4o = [(0,)]
+
+The "least" characteristic for picking the next line is contained in the smallest amount of affected cliques
+
+Does every K4 contain one ordered line?
+    K4 without an ordered line:
+        1,2,4,7
+
+
+
+
+
+
+
+
+
+
+
+
+New Flow :
+Define orders by:
+First order is no shared vertices throughout [(0,1),(2,3),...]
+Order 1.5 is the untouched vertex, if there, with the last to-be-paired (in second) even vertex
+Second order is a vertex from two seperate first order lines. Could be any, pick evens.
+Order 2.5 is :
+    C1: 
+
+Now I'm caught up with the four cases:
+CASE 0: Even v, fo :
+1o: [(0,1),(2,3),...]
+2o: [(0,2),(4,6),...]
+3o: [(1,5),(3,7),...]  #stagger them so you're picking third order lines from first order ones not already linked by second order
+4o: [(0,)]
+
+I can just do the computations on vertexes where this is the case and theoretically get a bound within four
+I need to color each order and check at what point I have either one fully changed Ky, or every Ky with at least one affected line
+If every Ky clique has at least one affected line and there are no fully changed Kx then I've found a legal coloring, the Ramsey number is higher
+
+
+CASE 1: Even v, odd fo :
+fo: [(0,1),(2,3),...]
+so: [(0,2),(4,6),...]
+Not in so:
+v-2
+
+CASE 2: Odd v, even fo :
+fo: [(0,1),(2,3),...]  u_v=v-1
+1.5 [(v-5,v-1)]
+so: [(0,2),(4,6),...]
+Not in fo:
+v-1
+Not in so:
+v-3
+
+
+CASE 3: Odd v,fo :
+fo: [(0,1),(2,3),...]  u_v
+1.5 [(v-1,u_v)]  *last fo_l represented in "so" with the u_v
+so: [(0,2),(4,6),...]
+Not in fo:
+v-1
+
+
+
+
+
 NOTES FOR one blue line a20c
 Formula = summation from i to min(k,b) of      bCi * 2^i * sC[k-i]
 
