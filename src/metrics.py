@@ -33,14 +33,25 @@ def compute_second_order_lines(first_order_lines, untouched_v):
             second_order_lines.append([first_order_lines[i][0], untouched_v])
     return second_order_lines
 
+    #Just completely ignore it, then add the case where I've picked 0, 1, or 2 from the last unsafe box
+    """
+    def calcOdd(top, k, s, b, multiplier=1):
+        ret = 0
+        for i in range(top+1):
+            ret += nCk(s-i, k-i) * 2**i * nCk(b-1, i)
+        ret *= multiplier
+        return ret
+    """
+    
+
 def one_u_a2oc(v, xy):
     def calc(top, k, s, b, multiplier=1):
         ret = 0
         for i in range(top+1):
-            ret += nCk(s+1-i, k-i) * 2**i * nCk(b-1, i)
+            ret += nCk(s-i, k-i) * 2**i * nCk(b-1, i)
         ret *= multiplier
         return ret
-    
+
     fo = v // 2
     so = fo // 2
     if v & 1 and fo & 1:
@@ -57,7 +68,21 @@ def one_u_a2oc(v, xy):
             ret += calc(top, k, fo-1, b, fo) #All fo_l
             ret += calc(top, k, fo-1, b) #untouched_v so_l
             top = min(top_base,fo-2)
+            ret -= calc(top, k-1, fo-2, b-1, fo) #SUBTRACT All fo_l
+            ret -= calc(top, k-1, fo-2, b-1) #SUBTRACT untouched_v so_l
             ret += calc(top, k, fo-2, b, so-1) #All so_l except one with untouched_v
+            top = min(top_base,fo-3)
+            ret -= calc(top, k-1, fo-3, b-1, so-2) #SUBTRACT All so_l except one with untouched_v
+            #Hopefully above is all Kxy with one blue line, except for those with one vertex from one unsafe box. They were all symmetrical above
+                #Below is to add in the Kxy with one blue line with the untouched vertex fixed
+            #For fixed fo, u_v, it will be summ(nCk(fo-i,k-1-i) * ... nCk(b-1,i)) * fo
+            #For fixed so, u_v, it will be summ(nCk(fo-i,k-1-i) * ... nCk(b-2,i)) * so-1
+            #For fixed so containing u_c   summ(nCk(fo-i),k-i) * ... nCh(b-1,i)
+            top = min(top_base,fo)
+            ret += calc(top, k-1, fo, b-1, fo)
+            ret += calc(top, k-1, fo, b-1, so-1)
+            ret += calc(top, k, fo, b-1)
+
         else: #v odd, fo even                             Right
             top = min(top_base,fo)
             ret += calc(top, k, fo, b, fo) #All fo_l

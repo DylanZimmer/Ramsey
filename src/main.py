@@ -3,6 +3,7 @@ import graph_generation
 import metrics
 import json
 import brute
+import metrics_easy
 
 def main():
     db.drop_tables()
@@ -22,9 +23,9 @@ def main():
     yL = [4,5,6,7,4,5,6,7]
     """
 
-    vL = [11,15,19]
-    xL = [4,4,4]
-    yL = [5,5,5]
+    vL = [16,20,24]
+    xL = [8,8,8]
+    yL = [9,9,9]
 
 
     for i in range(len(vL)):
@@ -37,9 +38,17 @@ def main():
         brute_metrics = brute.brute(v,x,y)
         db.insert_metrics_brute(graph_id, v, x, y, brute_metrics)
 
+
+"""
+        a2oc = metrics_easy.compute_easy(v,x,y)
+        db.insert_metrics(graph_id, v, x, y, a2oc)
+"""
+
+"""
         if not db.metrics_exist(graph_id):
             computed_metrics = metrics.compute_metrics(v,x,y)
             db.insert_metrics(graph_id, v, x, y, computed_metrics)
+"""
 
 
 if __name__ == "__main__":

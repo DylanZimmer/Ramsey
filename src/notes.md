@@ -1,3 +1,27 @@
+PERSPECTIVE SHIFT
+    I don't need to be calculating how many unnafected cliques there are post each coloring, I only
+    need to be checking if there are any unnafected or fully contained cliques
+
+    There are still unnafected if I can find 
+
+For v=16, x=9 (there are no unnafected after third order coloring) :
+First Order = [(0,1),(2,3),(4,5),(6,7),(8,9),(10,11),(12,13),(14,15)]
+#Second Order = [(0,2),(4,6),(8,10),(12,14)]
+#Third Order = [(1,9),(3,11),(5,13),(7,15)]
+
+There are unnafected for v=8 because :
+
+
+There are no unnafected for v=9 because fo=8 and once I pick one from each fo I'm forced
+    to pick one more
+
+
+
+
+
+
+
+
 
 NEW IDEA
 Only look at the orders, not the affected Kv after them
@@ -9,10 +33,10 @@ or Ky will have a fully blue clique with no Kx being fully colored
 That is :
 There is a non-monochromatic coloring of v for (x,y) :
     There is no Kx fully contained in ordered lines
-    Every Ky clique contains at least one ordered line
+    Every Ky clique contains at least one ordered line (no unnafected Ky)
 v is at or past R(x,y) :
     There is a Kx fully contained in ordered lines
-    There is at least one Ky not containing an ordered line
+    There is at least one Ky not containing an ordered line (1+ unnafected Ky)
 
 So for R(3,4) [which is 9] :
 v=8 :
@@ -29,7 +53,115 @@ Does every K4 contain one ordered line?
 
 
 
+#First Order = [(0,1),(2,3),(4,5),(6,7),(8,9),(10,11)] 
+#Second Order = [(0,2),(4,6),(8,10)] 
+#Third Order = [(1,7),(3,9),(5,11)] 
+#Fourth Order = [(0,3),(4,7),(8,11)] 
+#Fifth Order = [(1,2),(5,6),(9,10)] 
+#Sixth Order = [(1,3),(5,7),(9,11)]
 
+
+At third order, I'm looking at 
+b1 = [(0,2),(4,6),(8,10)]
+b2 = [(1,7),(3,9),(5,11)]
+(1,3), (5,7), (9,11) knock out a full pair in b1. The rest of the ways you can choose b2 knock out 1
+from each vertex chosen
+
+
+
+At fourth order I have:
+b1 = [(0,2,3),(4,6,7),(8,10,11)]
+Leftover = 1,5,9
+1 knocks out 0,7
+5 knocks out 4,11
+9 knocks out 3,8
+So each "safe vertex" combines with 2**2 * 3 * bCi
+b2 = [(1,)]
+
+
+#Fourth Order = [(0,3),(4,7),(8,11),(12,15)] 
+#Fifth Order = [(1,2),(5,6),(9,10),(13,14)] 
+#Sixth Order = [(1,3),(5,7),(9,11),(13,15)]
+
+#First Order = [(0,1),(2,3),(4,5),(6,7),(8,9),(10,11),(12,13),(14,15)] 
+#Second Order = [(0,2),(4,6),(8,10),(12,14)] 
+#Third Order = [(1,9),(3,11),(5,13)(7,15)] 
+
+At third order you have
+b1 = [(0,2),(4,6),(8,10),(12,14)]
+b2 = [(1,9),(3,11),(5,13),(7,15)]
+(1,3), (5,7), (9,11), (13,15) knock out a full pair from b1. The rest of the ways you can choose b2 knock out
+1 per chosen vertex
+
+Fix '1' with x=4:
+i=0:
+    b1 = [(0,2),(4,6),(8,10),(12,14)]
+    ret += 2**4 * 4C4
+i=1:
+    b1 = [(2),(4,6),(8,10),(12,14)]
+    ret += 2**3 * 4C3
+i=2:
+    Pick 3 from (3,11)
+        b1 = [(4,6),(8,10),(12,14)]
+        ret += 2**3 * 3C2
+    Pick 11 from (3,11), or one from a different 3o
+        b1 = [(2),(4,6),(8)(12,14)]
+        ret += 2**2 * 4C2
+i=3:
+    Pick 3 from (3,11) and any remaining option in 3o ; or (5,7) or (13,15) [pictured is choice 3,5]
+        b1 = [(6),(8,10),(12,14)]
+        ret += 
+    Pick 11 from 3,11 ; or two choices from the remaining 3o except (5,7) or (13,15). [pictured is 5,11]
+        b1 = [(2),(6),(8),(12,14)]
+i=4:
+    Pick 3 from (3,11)
+        Take (5,7) [could be (13,15)]
+            b1 = [(8,10),(12,14)]
+        Take 5,15 [or 7,13]
+            b1 = [(6),(8,10),(12)]
+    Pick 11 from (3,11)
+        Take (5,7) [could be (13,15)]
+            b1 = [(2),(8),(12,14)]
+        Take 5,15 [or 7,13]
+            b1 = [(2),(6),(8),(12)]
+        
+
+
+
+
+
+At fourth order I have:
+b1 = [(0,2,3),(4,6,7),(8,10,11)]
+Leftover = 1,5,9
+1 knocks out 0,7
+5 knocks out 4,11
+9 knocks out 3,8
+So each "safe vertex" combines with 2**2 * 3 * bCi
+
+
+With i as the number of b2 I'm choosing :
+    for i=0,1
+        No special lines
+    for i=2,3
+        Fix one, forces one
+    for i=4,5
+        Fix two, forces two
+
+Fix '1' :
+    Have 1,3 fixed
+    The remaining b2 portion is choose 1 from [(5,13),(7,15)]
+        b1 = b1 - 1 - i
+    Have 1,9 fixed
+    The remaining b2 portion is the same as above
+        b1 = bi - i * 2**??
+Then I can further fix the 5??
+
+
+
+
+
+
+Ways to choose b2 = 2**|b2| * b2C
 
 
 

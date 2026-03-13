@@ -44,6 +44,8 @@ def create_tables():
             Ky_with_u_blue_lines_a1oc TEXT,
             Kx_with_u_blue_lines_a2oc TEXT,
             Ky_with_u_blue_lines_a2oc TEXT,
+            Kx_with_u_blue_lines_a3oc TEXT,
+            Ky_with_u_blue_lines_a3oc TEXT,
             FOREIGN KEY (graph_id) REFERENCES graphs(id)
         )
         """)
@@ -58,6 +60,8 @@ def create_tables():
             Ky_with_u_blue_lines_a1oc TEXT,
             Kx_with_u_blue_lines_a2oc TEXT,
             Ky_with_u_blue_lines_a2oc TEXT,
+            Kx_with_u_blue_lines_a3oc TEXT,
+            Ky_with_u_blue_lines_a3oc TEXT,
             FOREIGN KEY (graph_id) REFERENCES graphs(id)
         )
         """)
@@ -106,9 +110,11 @@ def insert_metrics(graph_id, v, x, y, metrics):
                 Kx_with_u_blue_lines_a1oc,
                 Ky_with_u_blue_lines_a1oc,
                 Kx_with_u_blue_lines_a2oc,
-                Ky_with_u_blue_lines_a2oc
+                Ky_with_u_blue_lines_a2oc,
+                Kx_with_u_blue_lines_a3oc,
+                Ky_with_u_blue_lines_a3oc
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 graph_id,
@@ -119,6 +125,8 @@ def insert_metrics(graph_id, v, x, y, metrics):
                 json.dumps(metrics["Ky_with_u_blue_lines_a1oc"]),
                 json.dumps(metrics["Kx_with_u_blue_lines_a2oc"]),
                 json.dumps(metrics["Ky_with_u_blue_lines_a2oc"]),
+                json.dumps(metrics["Kx_with_u_blue_lines_a3oc"]),
+                json.dumps(metrics["Ky_with_u_blue_lines_a3oc"]),
             )
         )
 
@@ -138,9 +146,11 @@ def insert_metrics_brute(graph_id, v, x, y, metrics):
                 Kx_with_u_blue_lines_a1oc,
                 Ky_with_u_blue_lines_a1oc,
                 Kx_with_u_blue_lines_a2oc,
-                Ky_with_u_blue_lines_a2oc
+                Ky_with_u_blue_lines_a2oc,
+                Kx_with_u_blue_lines_a3oc,
+                Ky_with_u_blue_lines_a3oc
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 graph_id,
@@ -151,6 +161,8 @@ def insert_metrics_brute(graph_id, v, x, y, metrics):
                 json.dumps(metrics["Ky_with_u_blue_lines_a1oc"]),
                 json.dumps(metrics["Kx_with_u_blue_lines_a2oc"]),
                 json.dumps(metrics["Ky_with_u_blue_lines_a2oc"]),
+                json.dumps(metrics["Kx_with_u_blue_lines_a3oc"]),
+                json.dumps(metrics["Ky_with_u_blue_lines_a3oc"]),
             )
         )
 
