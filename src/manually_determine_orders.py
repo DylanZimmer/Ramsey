@@ -1,3 +1,7 @@
+"""
+python manually_determine_orders.py
+"""
+
 from itertools import combinations
 from collections import defaultdict, Counter
 
@@ -25,8 +29,25 @@ def find_next_order(v, xy, colored=None):
 
     for k in sorted(edge_freq):
         print(f"Edge frequencies for cliques with {k} untouched edges:")
-        for edge, freq in edge_freq[k].most_common():
-            print(edge, freq)
+
+        freq_groups = defaultdict(list)
+
+        for edge, freq in edge_freq[k].items():
+            freq_groups[freq].append(edge)
+
+        for freq in sorted(freq_groups, reverse=True):
+            print(freq, "  ->", freq_groups[freq])
         print()
 
     return results, edge_freq
+
+def edges_not_in_all(*lists):
+    sets = [set(lst) for lst in lists]
+
+    union = set.union(*sets)
+    intersection = set.intersection(*sets)
+    print(sorted(union-intersection))
+    return sorted(union - intersection)
+
+if __name__ == "__main__":
+    find_next_order(12,5,[(0,1),(2,3),(4,5),(6,7),(8,9),(10,11),(0,2),(4,6)])

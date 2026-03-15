@@ -1,3 +1,36 @@
+NEXT STEP
+1o:
+Still have unnafected Kx a1oc if x < |fo|
+    Because the Kx where I pick one from every first order line is unnafected. If I picked
+    a next vertex it would be two from one first order pair, so that clique would be affected
+
+2o:
+Still have unnafected Kx a2oc if x < |fo|
+    The Kx where I pick only odd vertices from each necessary first order pair (up to x) is unnafected
+
+3o:
+if v % 8 == 0:
+    Still have unnafected Kx a3oc if x < (3/2) * |4o|            first actual change
+        #Even 4o vertices then odd for the first half of 4o pairs
+else:
+    Still have unnafected Kx a3oc if x < 2*|4o| = |fo|
+        Any Kx containing only vertices in 4o is unnafected
+
+
+There was only the further specification after v%8 for 4o because that's when picking two of them could
+    have violated an earlier order
+
+
+4o:
+If v % 8 == 0:
+    Still have unnafected Kx a4oc if x < (3/2) * |5o|           *Note this doesn't cut down any more
+        Pick all evens in fifth order, then odds up to half
+    Still have unnafected Kx a4oc if x < 2 * |5o| = |1o|
+        Any Kx containing only vertices in 5o is unnafected
+
+
+
+
 PERSPECTIVE SHIFT
     I don't need to be calculating how many unnafected cliques there are post each coloring, I only
     need to be checking if there are any unnafected or fully contained cliques
@@ -8,16 +41,96 @@ For v=16, x=9 (there are no unnafected after third order coloring) :
 First Order = [(0,1),(2,3),(4,5),(6,7),(8,9),(10,11),(12,13),(14,15)]
 #Second Order = [(0,2),(4,6),(8,10),(12,14)]
 #Third Order = [(1,9),(3,11),(5,13),(7,15)]
+#Fourth Order = [(0,3),(4,7),(8,11),(12,15)]
+#Fifth Order = [(1,2),(5,6),(9,10),(13,14)]
+#Sixth Order = [(1,3),(5,7),(9,11),(13,15)]
+
+WHEN WILL THE FOURTH ORDER LINES CONTAIN A THIRD ORDER LINE?
+v=16
+#Third Order = [(1,9),(3,11),(5,13),(7,15)]
+#Fourth Order = [(0,3),(4,7),(8,11),(12,15)]
+#Fifth Order = [(1,2),(5,6),(9,10),(13,14)]
+#Sixth Order = [(1,3),(5,7),(9,11),(13,15)]
+v=20
+#Third Order = [(1,11),(3,13),(5,15),(7,17),(9,19)]
+#Fourth Order = [(0,3),(4,7),(8,11),(12,15),(16,19)]
+#Fifth Order = [(1,2),(5,6),(9,10),(13,14),(17,18)]
+#Sixth Order = [(1,3),(5,7),(9,11),(13,15),(17,19)]
+v=24
+#Third Order = [(1,13),(3,15),(5,17),(7,19),(9,21)(11,23)]
+#Fourth Order = [(0,3),(4,7),(8,11),(12,15),(16,19),(20,23)]
+#Fifth Order = [(1,2),(5,6),(9,10),(13,14),(17,18),(21,22)]
+#Sixth Order = [(1,3),(5,7),(9,11),(13,15),(17,19),(21,23)]
+v=28
+#Third Order = [(1,15),(3,17),(5,19),(7,21),(9,23)(11,25),(13,27)]
+#Fourth Order = [(0,3),(4,7),(8,11),(12,15),(16,19),(20,23),(24,27)]
+#Fifth Order = [(1,2),(5,6),(9,10),(13,14),(17,18),(21,22),(25,26)]
+#Sixth Order = [(1,3),(5,7),(9,11),(13,15),(17,19),(21,23),(25,27)]
+v=32
+#Third Order = [(1,17),(3,19),(5,21),(7,23),(9,25)(11,27),(13,29),(15,31)]
+#Fourth Order = [(0,3),(4,7),(8,11),(12,15),(16,19),(20,23),(24,27),(28,31)]
+#Fifth Order = [(1,2),(5,6),(9,10),(13,14),(17,18),(21,22),(25,26),(29,30)]
+#Sixth Order = [(1,3),(5,7),(9,11),(13,15),(17,19),(21,23),(25,27),(29,31)]
+
+
+I will have third order unnafected cliques if I can choose every fourth order even vertex, then
+every odd vertex that doesn't break the third order (for v=24 I will have unnafected cliques up to
+x=8 because I'll have the unnafected clique (0,4,8,12,16,20,3,7,11) but any next vertex will have a blue line in the K9)
+
+
+
+If there are odd vertices in 4o that match up to odds in 3o (v=24, not v=20)
+Unnafected if x < fo 
+(the clique containing all points in 4o (or less) is unnafected)
+
+
+So there are still unnafected cliques after 3o if
+x < |4o| 
+
+
+
+
+
+
+
+The patterns foor checking unnafected are going to be to check the next order
+NEW CONJECTURE :
+    If two fourth order odd numbers are a blue line in the third order, you will not have
+no unnafected lines in your Kx after third order coloring
+    (Also this should be calculable just off fo)
+This is because fourth order lines are the ones st
+
 
 There are unnafected for v=8 because :
+    O O E O
+    1 2 5 6 9 10 13 14
+
+TO CHECK IF THERE ARE STILL UNNAFECTED Kxy AFTER NEXT ORDER COLORING
+Think in terms of fo_l from left to right
+
 
 
 There are no unnafected for v=9 because fo=8 and once I pick one from each fo I'm forced
-    to pick one more
+    to pick one more (trivial)
 
 
+At third coloring there's a symmetry again. I can pick one path starting with 0 or 1 and if
+    it doesn't work nothing will.
 
+0, 3, 4, 7, 8, 11, 12, 14
 
+The rule for each entry n is :
+n % 4 == 0 :
+    Disallow n+2
+n odd :
+    n < fo :
+        Disallow n+fo
+    n > fo :
+        Disallow n-fo (If even necessary because process is left to right)
+
+Conjecture:
+The only way to fail is for the pattern outlined in the numbers above to fail on an odd entry
+(Incorrect - paths diverge at 4)
 
 
 
